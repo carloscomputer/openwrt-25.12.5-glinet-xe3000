@@ -1,4 +1,4 @@
-# Custom feeds for the GL.iNet GL-X3000 image build.
+# Custom feeds for the GL.iNet GL-XE3000 image build.
 #
 # One line per package layer to symlink under ./feeds-local/. Format:
 #

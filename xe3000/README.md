@@ -1,6 +1,6 @@
-# GL.iNet GL-X3000 (Spitz AX) — vanilla OpenWrt build
+# GL.iNet GL-XE3000 (Spitz AX) — vanilla OpenWrt build
 
-A working OpenWrt 25.12 image for the GL.iNet GL-X3000 (Spitz AX),
+A working OpenWrt 25.12 image for the GL.iNet GL-XE3000 (Spitz AX),
 including the kernel and userspace pieces needed to drive the
 Quectel RM520N-GL 5G modem on the mainline `mhi_pci_generic` +
 `mhi_wwan_mbim` path with no proprietary out-of-tree bits, with
@@ -21,7 +21,7 @@ helpers alongside ModemManager:
    0x5201) instead of Quectel's own. Mainline `mhi_pci_generic`
    doesn't list that combination, so the modem never enumerates as
    an MHI device. We carry a 12-line kernel patch under
-   `target/linux/generic/pending-6.12/gl-x3000-quectel-pci-id.patch`
+   `target/linux/generic/pending-6.12/gl-xe3000-quectel-pci-id.patch`
    that adds it.
 
 2. **PCIe runtime PM races with MHI's startup ramp.** When the root
@@ -31,7 +31,7 @@ helpers alongside ModemManager:
    gets stuck spinning on `[14] CmpltTO` AER interrupts. Only a host
    reboot recovers — runtime sysfs toggles like `power/control=on`
    reach the device too late. We pin `pcie_port_pm=off` in the
-   chosen bootargs (`target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi`)
+   chosen bootargs (`target/linux/mediatek/dts/mt7981a-glinet-gl-xe3000-xe3000-common.dtsi`)
    so the kernel never tries to take the link down.
 
 3. **ModemManager has no port blacklist without udev.** OpenWrt's
@@ -43,7 +43,7 @@ helpers alongside ModemManager:
    USB-side `/dev/ttyUSB[0-3]` (DIAG/NMEA/AT/AT2), which our
    `quectel-5g-tools` helpers (`5g-info`, `5g-monitor`, `5g-lock`,
    `5g-led-bars`) need to talk raw AT to. We patch the tty hotplug
-   script via `x3000/patches/0001-modemmanager-tty-honour-ignore-tty.patch`
+   script via `xe3000/patches/0001-modemmanager-tty-honour-ignore-tty.patch`
    to honour an `/etc/modemmanager/ignore-tty` allow-list (shipped
    by `quectel-5g-tools`) so MM keeps managing only the MHI control
    surface (`/dev/wwan0at0`, `/dev/wwan0mbim0`).
@@ -54,7 +54,7 @@ helpers alongside ModemManager:
    links libcurl against `libbrotlidec.so.1` if it sees the headers
    — which trips the install-time `.so` sanity check with
    _"Package libcurl is missing dependencies"_. Patched via
-   `x3000/patches/0002-curl-disable-brotli-autodetect.patch` to pass
+   `xe3000/patches/0002-curl-disable-brotli-autodetect.patch` to pass
    `--without-brotli` explicitly.
 
 ## What's different from a stock OpenWrt 25.12 build
@@ -62,16 +62,16 @@ helpers alongside ModemManager:
 Commits on top of upstream `openwrt-25.12`:
 
   * `mhi_pci_generic: claim Quectel RM520N-GL with Qualcomm subvendor IDs`
-  * `mediatek: glinet gl-x3000: disable PCIe runtime PM via pcie_port_pm=off`
-  * `x3000: persistent build configuration` (the build-prep machinery
-    + variant split under `x3000/`)
+  * `mediatek: glinet gl-xe3000: disable PCIe runtime PM via pcie_port_pm=off`
+  * `xe3000: persistent build configuration` (the build-prep machinery
+    + variant split under `xe3000/`)
   * `swap modem stack from umbim+watchdog to ModemManager`
   * `patch curl to disable brotli autodetect`
 
-Plus the build-prep machinery under `x3000/` (incl. patches to feed
+Plus the build-prep machinery under `xe3000/` (incl. patches to feed
 files applied at the end of `prepare.sh`).
 
-The build config drops a few things that upstream's GL-X3000 device
+The build config drops a few things that upstream's GL-XE3000 device
 recipe pulls in:
 
   * **samba4-server + luci-app-samba4.** No SMB use case for this
@@ -105,7 +105,7 @@ And adds:
     available for diagnostics (`mbimcli`, `mbim-proxy`).
   * **speedtest-go**, **wifi-dethrash-collector**.
   * **telegraf-full** — *private variant only*. Useful if you've got
-    a metrics endpoint to push to. Toggled in `x3000/config.private`;
+    a metrics endpoint to push to. Toggled in `xe3000/config.private`;
     the public variant explicitly unsets both `telegraf` and
     `telegraf-full`.
   * **procps-ng-ps**: real `ps` replacing busybox's stub, swapped in
@@ -115,7 +115,7 @@ And adds:
 
 | Field | Value |
 |---|---|
-| Device | GL.iNet GL-X3000 (Spitz AX) |
+| Device | GL.iNet GL-XE3000 (Spitz AX) |
 | SoC | MediaTek MT7981A |
 | Wi-Fi | MT7976 (2.4 GHz + 5 GHz) |
 | Modem | Quectel RM520N-GL (5G NR Sub-6) over PCIe MHI |
@@ -150,39 +150,39 @@ The build kit produces two variants, selected by argument to
     private overlay, no telegraf.
 
   * **`private`** — same image plus your own per-builder rootfs
-    overlay at `x3000/files-private/`, plus `telegraf-full`.
+    overlay at `xe3000/files-private/`, plus `telegraf-full`.
     `files-private/`'s contents are gitignored, so each builder's
     private bits stay local and out of the public repo. See
     "Adding your own private overlay" below.
 
 ```
-git clone https://github.com/vjt/openwrt-glinet-x3000.git
-cd openwrt-glinet-x3000
+git clone https://github.com/vjt/openwrt-glinet-xe3000.git
+cd openwrt-glinet-xe3000
 
-# One-shot: prepare + make + relocate output to bin-x3000-<variant>/
-./x3000/build.sh public           # public image
-./x3000/build.sh private          # your-own-overlay image
-./x3000/build.sh public -- V=s    # forward extra args to make
+# One-shot: prepare + make + relocate output to bin-xe3000-<variant>/
+./xe3000/build.sh public           # public image
+./xe3000/build.sh private          # your-own-overlay image
+./xe3000/build.sh public -- V=s    # forward extra args to make
 
 # Or step-by-step (artifacts land in bin/ — overwritten on every build):
-./x3000/prepare.sh public
+./xe3000/prepare.sh public
 make -j$(nproc)
 ```
 
-`prepare.sh` is idempotent — re-run it any time `x3000/custom-feeds.txt`
+`prepare.sh` is idempotent — re-run it any time `xe3000/custom-feeds.txt`
 changes (e.g. you bumped a custom package) or you switch variants and
 it will refresh the clones, refresh the symlinks under `feeds-local/`,
-recompose `.config` from `x3000/config.common + x3000/config.<variant>`,
-and recompose `files/` from `x3000/files-common/ + x3000/files-<variant>/`.
-The active variant is recorded in `.x3000-variant`.
+recompose `.config` from `xe3000/config.common + xe3000/config.<variant>`,
+and recompose `files/` from `xe3000/files-common/ + xe3000/files-<variant>/`.
+The active variant is recorded in `.xe3000-variant`.
 
 After `build.sh` finishes the artifacts land under
 
 ```
-bin-x3000-<variant>/
-├── openwrt-mediatek-filogic-glinet_gl-x3000-squashfs-sysupgrade.bin
-├── openwrt-mediatek-filogic-glinet_gl-x3000-squashfs-factory.bin
-├── openwrt-mediatek-filogic-glinet_gl-x3000.manifest
+bin-xe3000-<variant>/
+├── openwrt-mediatek-filogic-glinet_gl-xe3000-squashfs-sysupgrade.bin
+├── openwrt-mediatek-filogic-glinet_gl-xe3000-squashfs-factory.bin
+├── openwrt-mediatek-filogic-glinet_gl-xe3000.manifest
 └── …
 ```
 
@@ -203,11 +203,11 @@ so populating them doesn't pollute the upstream tree:
 
 | Slot | Purpose |
 |---|---|
-| `x3000/files-private/` | rootfs files (CAs, configs, …) |
-| `x3000/custom-feeds.private.local` | extra package repos |
-| `x3000/config.private.local` | extra `CONFIG_PACKAGE_…` selections |
+| `xe3000/files-private/` | rootfs files (CAs, configs, …) |
+| `xe3000/custom-feeds.private.local` | extra package repos |
+| `xe3000/config.private.local` | extra `CONFIG_PACKAGE_…` selections |
 
-### Rootfs files: `x3000/files-private/`
+### Rootfs files: `xe3000/files-private/`
 
 Drop anything here that should ship inside the rootfs of your private
 build. Layout mirrors the device's rootfs path; permissions are
@@ -240,11 +240,11 @@ Common contents:
 
 ### Baking your own packages
 
-The `public` build pulls extra packages from `x3000/custom-feeds.txt`
+The `public` build pulls extra packages from `xe3000/custom-feeds.txt`
 (the four vjt forks listed there). For private builds you can layer
 your own on top via two gitignored files:
 
-`x3000/custom-feeds.private.local` — same line format as
+`xe3000/custom-feeds.private.local` — same line format as
 `custom-feeds.txt` (`<symlink-name> <git-url> <ref> <subdir>`), one
 per repo. `prepare.sh private` clones each, refreshes to `<ref>`, and
 symlinks the package subdir under `feeds-local/` alongside the public
@@ -252,18 +252,18 @@ ones, so they're visible to OpenWrt's feeds machinery as if they'd
 always been there. Example:
 
 ```
-# x3000/custom-feeds.private.local
+# xe3000/custom-feeds.private.local
 my-private-pkg  git@github.com:you/my-private-pkg.git  main  openwrt/my-private-pkg
 my-other-pkg    git@gitea.example/you/my-other.git    v1.2  openwrt
 ```
 
-`x3000/config.private.local` — `CONFIG_PACKAGE_<name>=y` lines,
+`xe3000/config.private.local` — `CONFIG_PACKAGE_<name>=y` lines,
 appended to the composed `.config` after `config.private`. Anything
 you'd put in `config.private` if it weren't going into the public
 repo:
 
 ```
-# x3000/config.private.local
+# xe3000/config.private.local
 CONFIG_PACKAGE_my-private-pkg=y
 CONFIG_PACKAGE_my-other-pkg=y
 ```
@@ -273,7 +273,7 @@ the local-additions step if either doesn't exist.
 
 ## On aarch64 build hosts
 
-`x3000/config.common` already disables `CONFIG_GOLANG_BUILD_BOOTSTRAP`
+`xe3000/config.common` already disables `CONFIG_GOLANG_BUILD_BOOTSTRAP`
 and sets `GOLANG_EXTERNAL_BOOTSTRAP_ROOT="/usr/local/go"`. Install Go
 ≥ 1.21 there before running `prepare.sh`:
 
@@ -283,12 +283,12 @@ sudo tar -C /usr/local -xzf go1.23.5.linux-arm64.tar.gz
 ```
 
 If your Go install lives elsewhere, edit
-`CONFIG_GOLANG_EXTERNAL_BOOTSTRAP_ROOT` in `x3000/config.common` before
+`CONFIG_GOLANG_EXTERNAL_BOOTSTRAP_ROOT` in `xe3000/config.common` before
 the `prepare.sh` run that composes it into `.config`.
 
 ## Pinning custom packages
 
-`x3000/custom-feeds.txt` defaults to `master` for every custom repo,
+`xe3000/custom-feeds.txt` defaults to `master` for every custom repo,
 which tracks fixes — handy during development but not reproducible.
 For production builds, replace each `master` with a commit SHA, e.g.
 
@@ -296,19 +296,19 @@ For production builds, replace each `master` with a commit SHA, e.g.
 android-tools https://github.com/vjt/openwrt-android-tools.git f24c199 openwrt/android-tools
 ```
 
-Then `./x3000/prepare.sh` will fetch the repos and check out exactly
+Then `./xe3000/prepare.sh` will fetch the repos and check out exactly
 those SHAs.
 
 ## Layout
 
 ```
-x3000/
+xe3000/
 ├── README.md           This file.
 ├── prepare.sh          Variant-aware tree setup: feeds-local/, feeds.conf,
                         composes .config and files/ from common + variant
-                        sources, applies x3000/patches/ with `-F 0`.
+                        sources, applies xe3000/patches/ with `-F 0`.
 ├── build.sh            One-shot driver: prepare.sh + make with a
-                        variant-specific BIN_DIR (bin-x3000-<variant>/).
+                        variant-specific BIN_DIR (bin-xe3000-<variant>/).
 ├── feeds.conf          Verbatim copy installed at /feeds.conf
                         (with feeds-local/ rewritten to absolute path).
 ├── custom-feeds.txt    Tracked repo list driving prepare.sh.
@@ -337,14 +337,14 @@ x3000/
                           * 0001-modemmanager-tty-honour-ignore-tty.patch
                           * 0002-curl-disable-brotli-autodetect.patch
 target/linux/generic/pending-6.12/
-└── gl-x3000-quectel-pci-id.patch   Kernel patch (commit 8cc71da72a).
+└── gl-xe3000-quectel-pci-id.patch   Kernel patch (commit 8cc71da72a).
 target/linux/mediatek/dts/
-└── mt7981a-glinet-gl-x3000-xe3000-common.dtsi   pcie_port_pm=off
+└── mt7981a-glinet-gl-xe3000-xe3000-common.dtsi   pcie_port_pm=off
                                                  (commit 4087faad55).
 ```
 
 `prepare.sh` writes its composed outputs to `/.config` and `/files/`
-(both gitignored), and records the active variant in `/.x3000-variant`.
+(both gitignored), and records the active variant in `/.xe3000-variant`.
 
 ## Post-flash modem config
 
@@ -365,4 +365,4 @@ ifup wwan
 The `device` field must point at the modem's PHYSICAL parent
 (PCI device for MHI, USB device for cdc-wdm) — not its wwan/usbmisc
 child. The `readlink ... /../..` form above resolves to the right
-place for the GL-X3000's PCIe-attached RM520N.
+place for the GL-XE3000's PCIe-attached RM520N.

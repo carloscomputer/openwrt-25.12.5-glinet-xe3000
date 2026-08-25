@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# x3000/prepare.sh — set up the OpenWrt build tree to produce a GL-X3000
+# xe3000/prepare.sh — set up the OpenWrt build tree to produce a GL-XE3000
 # image. Two variants are supported:
 #
 #   private  bad.ass fleet image — telegraf-full pushing to
@@ -11,27 +11,27 @@
 #            quectel-5g-tools, adb, LuCI bundle) but no internal CA,
 #            no internal feed key, no telegraf push.
 #
-# Usage:  x3000/prepare.sh [private|public]
+# Usage:  xe3000/prepare.sh [private|public]
 #
 # What it does, idempotently:
-#   1. Clones the custom package repos listed in x3000/custom-feeds.txt
+#   1. Clones the custom package repos listed in xe3000/custom-feeds.txt
 #      into .build-deps/ (gitignored). Each repo is fetched + checked out
 #      to the pinned ref on every run.
 #   2. Creates symlinks under feeds-local/ pointing at the package
 #      subdirectory inside each clone. `feeds-local/` is what
 #      /feeds.conf's `src-link custom` references.
-#   3. Copies x3000/feeds.conf -> /feeds.conf so OpenWrt's `feeds update`
+#   3. Copies xe3000/feeds.conf -> /feeds.conf so OpenWrt's `feeds update`
 #      sees the standard 25.12 feeds plus our custom symlinks.
-#   4. Composes /.config from x3000/config.common + x3000/config.<variant>
+#   4. Composes /.config from xe3000/config.common + xe3000/config.<variant>
 #      and runs `make defconfig` to expand it into a full config tree.
-#   5. Wipes /files/ and rebuilds it from x3000/files-common/ +
-#      x3000/files-<variant>/, so swapping variants leaves no stale
+#   5. Wipes /files/ and rebuilds it from xe3000/files-common/ +
+#      xe3000/files-<variant>/, so swapping variants leaves no stale
 #      overlay files behind.
-#   6. Records the active variant in /.x3000-variant for build.sh and
+#   6. Records the active variant in /.xe3000-variant for build.sh and
 #      sanity checks.
 #   7. Runs `./scripts/feeds update -a && ./scripts/feeds install -a` so
 #      every Makefile is symlinked into package/feeds/.
-#   8. Applies x3000/patches/*.patch against feed-side files (modemmanager
+#   8. Applies xe3000/patches/*.patch against feed-side files (modemmanager
 #      tty hotplug etc.).
 
 set -euo pipefail
@@ -50,17 +50,17 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 DEPS="$ROOT/.build-deps"
 LOCAL="$ROOT/feeds-local"
-FEEDS_LIST="$ROOT/x3000/custom-feeds.txt"
-FEEDS_LIST_LOCAL="$ROOT/x3000/custom-feeds.$VARIANT.local"
-FEEDS_CONF_SRC="$ROOT/x3000/feeds.conf"
-CONFIG_COMMON="$ROOT/x3000/config.common"
-CONFIG_VARIANT="$ROOT/x3000/config.$VARIANT"
-CONFIG_VARIANT_LOCAL="$ROOT/x3000/config.$VARIANT.local"
-FILES_COMMON="$ROOT/x3000/files-common"
-FILES_VARIANT="$ROOT/x3000/files-$VARIANT"
-VARIANT_MARKER="$ROOT/.x3000-variant"
+FEEDS_LIST="$ROOT/xe3000/custom-feeds.txt"
+FEEDS_LIST_LOCAL="$ROOT/xe3000/custom-feeds.$VARIANT.local"
+FEEDS_CONF_SRC="$ROOT/xe3000/feeds.conf"
+CONFIG_COMMON="$ROOT/xe3000/config.common"
+CONFIG_VARIANT="$ROOT/xe3000/config.$VARIANT"
+CONFIG_VARIANT_LOCAL="$ROOT/xe3000/config.$VARIANT.local"
+FILES_COMMON="$ROOT/xe3000/files-common"
+FILES_VARIANT="$ROOT/xe3000/files-$VARIANT"
+VARIANT_MARKER="$ROOT/.xe3000-variant"
 
-echo "==> Preparing X3000 build tree (variant=$VARIANT)"
+echo "==> Preparing XE3000 build tree (variant=$VARIANT)"
 
 mkdir -p "$DEPS" "$LOCAL"
 
@@ -128,7 +128,7 @@ process_feed_list() {
 
 process_feed_list "$FEEDS_LIST"
 
-# Per-builder additions: x3000/custom-feeds.<variant>.local is a gitignored
+# Per-builder additions: xe3000/custom-feeds.<variant>.local is a gitignored
 # slot for repos that should only show up in your private builds (your
 # own forks, internal-only packages, …). Same line format as
 # custom-feeds.txt; absent file = no-op.
@@ -155,7 +155,7 @@ echo "==> Composing .config from config.common + config.$VARIANT$([ -f "$CONFIG_
     echo
     echo "# --- variant: $VARIANT ---"
     cat "$CONFIG_VARIANT"
-    # Per-builder additions: x3000/config.<variant>.local is a gitignored
+    # Per-builder additions: xe3000/config.<variant>.local is a gitignored
     # slot for CONFIG_PACKAGE_… selections specific to your private build
     # (e.g. private packages from custom-feeds.<variant>.local, or extra
     # tooling you don't want in the public image).
@@ -189,7 +189,7 @@ echo "$VARIANT" > "$VARIANT_MARKER"
 # checkout. If we patched a feed file on a previous run (see the patch
 # loop further down), the rebase blocks on those unstaged changes — so
 # reset every feed back to its tracked HEAD first. The patches are
-# re-applied below from x3000/patches/, so this round-trip is safe.
+# re-applied below from xe3000/patches/, so this round-trip is safe.
 for feeddir in "$ROOT"/feeds/*; do
     [[ -d "$feeddir/.git" ]] || continue
     git -C "$feeddir" checkout --quiet -- . 2>/dev/null || true
@@ -206,7 +206,7 @@ echo "==> feeds install -a"
 # OpenWrt's quilt-based patch system applies to upstream package SOURCES,
 # not to the OpenWrt-side `files/` overlays each package ships. We
 # nonetheless need to tweak one such file (modemmanager's tty hotplug,
-# see x3000/patches/0001-modemmanager-tty-honour-ignore-tty.patch for
+# see xe3000/patches/0001-modemmanager-tty-honour-ignore-tty.patch for
 # the why), so we apply our patches here against the relevant feed paths.
 #
 # Idempotent: if a patch is already applied (e.g. re-running prepare.sh
@@ -214,7 +214,7 @@ echo "==> feeds install -a"
 # via a reverse dry-run and skip silently. If neither forward nor reverse
 # applies cleanly the script bails out — that's the loud signal that
 # upstream has drifted and the patch needs refreshing.
-PATCH_DIR="$ROOT/x3000/patches"
+PATCH_DIR="$ROOT/xe3000/patches"
 if [[ -d "$PATCH_DIR" ]]; then
     for patchfile in "$PATCH_DIR"/*.patch; do
         [[ -f "$patchfile" ]] || continue
@@ -239,4 +239,4 @@ fi
 echo
 echo "Done. variant=$VARIANT"
 echo "Run 'make -j\$(nproc)' (add V=s for verbose output)"
-echo "or 'x3000/build.sh $VARIANT' to also relocate artifacts to bin-x3000-$VARIANT/."
+echo "or 'xe3000/build.sh $VARIANT' to also relocate artifacts to bin-xe3000-$VARIANT/."

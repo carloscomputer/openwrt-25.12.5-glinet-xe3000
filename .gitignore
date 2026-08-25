@@ -55,3 +55,9 @@ git-src
 .cproject
 .ccache
 .vscode*
+/bin-*/
+.config
+.config.baseline
+.config_current
+old.diffconfig
+.xe3000-variant

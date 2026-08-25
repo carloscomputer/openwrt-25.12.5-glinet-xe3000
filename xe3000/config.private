@@ -1,4 +1,4 @@
-# Private (bad.ass fleet) variant — composed on top of x3000/config.common
+# Private (bad.ass fleet) variant — composed on top of xe3000/config.common
 # by prepare.sh. Adds anything that only makes sense inside the bad.ass
 # network: metrics push to metrics.bad.ass, etc.
 

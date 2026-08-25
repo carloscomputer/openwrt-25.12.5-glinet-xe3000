@@ -15,7 +15,7 @@ circuit the hotplug script when DEVNAME matches an entry in
 surface (/dev/wwan0at0, /dev/wwan0mbim0), which is plenty for the
 data plane.
 
-The patch is applied by x3000/prepare.sh after `./scripts/feeds
+The patch is applied by xe3000/prepare.sh after `./scripts/feeds
 install -a`. Stored as a unified diff (rather than as a files/ overlay)
 so that an upstream change to 25-modemmanager-tty makes prepare.sh
 fail loudly instead of silently overlaying stale logic.
@@ -27,7 +27,7 @@ fail loudly instead of silently overlaying stale logic.
  [ -n "$DEVNAME" ] || exit
 
 +# Skip ports listed in /etc/modemmanager/ignore-tty (shipped by
-+# quectel-5g-tools — see openwrt-glinet-x3000 fork). They are owned by
++# quectel-5g-tools — see openwrt-glinet-xe3000 fork). They are owned by
 +# other userspace and MM must never open them. OpenWrt builds MM
 +# without udev so ID_MM_DEVICE_IGNORE is unavailable; this short
 +# circuit is the equivalent.

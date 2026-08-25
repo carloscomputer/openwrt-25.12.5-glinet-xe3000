@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #
-# x3000/build.sh — one-shot driver: prepare the tree for a variant,
-# build, and relocate the artifacts under bin-x3000-<variant>/ so a
+# xe3000/build.sh — one-shot driver: prepare the tree for a variant,
+# build, and relocate the artifacts under bin-xe3000-<variant>/ so a
 # subsequent build of the other variant doesn't clobber the output.
 #
-# Usage:  x3000/build.sh [private|public] [-- extra make args]
+# Usage:  xe3000/build.sh [private|public] [-- extra make args]
 #
 # Examples:
-#   x3000/build.sh                  # private, default parallelism
-#   x3000/build.sh public           # public, default parallelism
-#   x3000/build.sh public -- V=s    # public, verbose make
+#   xe3000/build.sh                  # private, default parallelism
+#   xe3000/build.sh public           # public, default parallelism
+#   xe3000/build.sh public -- V=s    # public, verbose make
 #
 # The build itself is just `make -j$(nproc)` with BIN_DIR pointing at a
 # variant-specific output tree. OpenWrt honours BIN_DIR consistently
@@ -33,9 +33,9 @@ if [[ "${1:-}" == "--" ]]; then shift; fi
 
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
-BIN_DIR="$ROOT/bin-x3000-$VARIANT"
+BIN_DIR="$ROOT/bin-xe3000-$VARIANT"
 
-"$ROOT/x3000/prepare.sh" "$VARIANT"
+"$ROOT/xe3000/prepare.sh" "$VARIANT"
 
 echo
 echo "==> make -j$(nproc) BIN_DIR=$BIN_DIR $*"

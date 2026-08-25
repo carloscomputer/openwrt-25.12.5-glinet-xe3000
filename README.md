@@ -9,7 +9,7 @@ with its **Quectel RM520N-GL 5G modem** running on the mainline
 data plane.
 
 **Pre-built images** are on the
-[**releases page**](https://github.com/vjt/openwrt-glinet-xe3000/releases)
+[**releases page**](https://github.com/carloscomputer/openwrt-25.12..5-glinet-xe3000/releases)
 — grab the latest `jeeves-rN` and flash the
 `...-squashfs-sysupgrade.bin` (factory image is rejected by stock
 GL.iNet U-Boot; sysupgrade is the only path in).
@@ -22,7 +22,7 @@ the public/private variant split, and the post-flash modem configuration.
 The whole build comes down to:
 
 ```
-git clone https://github.com/vjt/openwrt-glinet-xe3000.git
+git clone https://github.com/carloscomputer/openwrt-25.12.5-glinet-xe3000.git
 cd openwrt-glinet-xe3000
 ./xe3000/build.sh public          # or `private` with your own overlay
 ```

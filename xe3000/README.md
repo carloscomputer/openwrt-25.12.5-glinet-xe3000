@@ -21,7 +21,7 @@ helpers alongside ModemManager:
    0x5201) instead of Quectel's own. Mainline `mhi_pci_generic`
    doesn't list that combination, so the modem never enumerates as
    an MHI device. We carry a 12-line kernel patch under
-   `target/linux/generic/pending-6.12/gl-xe3000-quectel-pci-id.patch`
+   `target/linux/generic/pending-6.12/gl-x3000-quectel-pci-id.patch`
    that adds it.
 
 2. **PCIe runtime PM races with MHI's startup ramp.** When the root
@@ -31,7 +31,7 @@ helpers alongside ModemManager:
    gets stuck spinning on `[14] CmpltTO` AER interrupts. Only a host
    reboot recovers — runtime sysfs toggles like `power/control=on`
    reach the device too late. We pin `pcie_port_pm=off` in the
-   chosen bootargs (`target/linux/mediatek/dts/mt7981a-glinet-gl-xe3000-xe3000-common.dtsi`)
+   chosen bootargs (`target/linux/mediatek/dts/mt7981a-glinet-gl-x3000-xe3000-common.dtsi`)
    so the kernel never tries to take the link down.
 
 3. **ModemManager has no port blacklist without udev.** OpenWrt's
@@ -156,8 +156,8 @@ The build kit produces two variants, selected by argument to
     "Adding your own private overlay" below.
 
 ```
-git clone https://github.com/vjt/openwrt-glinet-xe3000.git
-cd openwrt-glinet-xe3000
+git clone https://github.com/carloscomputer/openwrt-25.12.5-glinet-xe3000.git
+cd openwrt-25.12.5-glinet-xe3000
 
 # One-shot: prepare + make + relocate output to bin-xe3000-<variant>/
 ./xe3000/build.sh public           # public image

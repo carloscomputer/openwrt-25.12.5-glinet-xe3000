@@ -23,7 +23,7 @@ The whole build comes down to:
 
 ```
 git clone https://github.com/carloscomputer/openwrt-25.12.5-glinet-xe3000.git
-cd openwrt-glinet-xe3000
+cd openwrt-25.12.5-glinet-xe3000
 ./xe3000/build.sh public          # or `private` with your own overlay
 ```
 

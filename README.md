@@ -3,13 +3,13 @@
 # This is a fork of OpenWrt
 
 This branch (`openwrt-25.12`) carries the patches and build configuration
-needed to produce a working image for the **GL.iNet GL-XE3000 (Pulli AX)**
+needed to produce a working image for the **GL.iNet GL-XE3000 (Puli AX)**
 with its **Quectel RM520N-GL 5G modem** running on the mainline
 `mhi_pci_generic` + `mhi_wwan_mbim` stack, with ModemManager owning the
 data plane.
 
 **Pre-built images** are on the
-[**releases page**](https://github.com/carloscomputer/openwrt-25.12..5-glinet-xe3000/releases)
+[**releases page**](https://github.com/carloscomputer/openwrt-25.12.5-glinet-xe3000/releases)
 — grab the latest `jeeves-rN` and flash the
 `...-squashfs-sysupgrade.bin` (factory image is rejected by stock
 GL.iNet U-Boot; sysupgrade is the only path in).

@@ -122,6 +122,7 @@ platform_do_upgrade() {
 	cudy,wr3000h-v1-ubootmod|\
 	cudy,wr3000p-v1-ubootmod|\
 	gatonetworks,gdsp|\
+	globitel,bt-r320|\
 	h3c,magic-nx30-pro|\
 	imou,hx21|\
 	jcg,q30-pro|\
@@ -131,6 +132,7 @@ platform_do_upgrade() {
 	mediatek,mt7988a-rfb|\
 	mercusys,mr90x-v1-ubi|\
 	netis,eap930-v1|\
+	netis,n6-v2|\
 	netis,nx30v2|\
 	netis,nx31|\
 	netis,nx32u|\
@@ -143,10 +145,12 @@ platform_do_upgrade() {
 	routerich,ax3000-ubootmod|\
 	routerich,be7200|\
 	snr,snr-cpe-ax2|\
+	teralink,tl3020-256mb|\
 	tplink,tl-xdr4288|\
 	tplink,tl-xdr6086|\
 	tplink,tl-xdr6088|\
 	tplink,tl-xtr8488|\
+	wavlink,wl-wnt100x3-ubootmod|\
 	xiaomi,mi-router-ax3000t-ubootmod|\
 	xiaomi,redmi-router-ax6000-ubootmod|\
 	xiaomi,mi-router-wr30u-ubootmod|\
@@ -292,6 +296,7 @@ platform_do_upgrade() {
 	xiaomi,redmi-router-ax6000-stock)
 		CI_KERN_UBIPART=ubi_kernel
 		CI_ROOT_UBIPART=ubi
+		CI_DATA_UBIPART=ubi
 		nand_do_upgrade "$1"
 		;;
 	*)
@@ -331,6 +336,7 @@ platform_check_image() {
 	cudy,wr3000h-v1-ubootmod|\
 	cudy,wr3000p-v1-ubootmod|\
 	gatonetworks,gdsp|\
+	globitel,bt-r320|\
 	h3c,magic-nx30-pro|\
 	jcg,q30-pro|\
 	jdcloud,re-cp-03|\
@@ -340,16 +346,19 @@ platform_check_image() {
 	mercusys,mr90x-v1-ubi|\
 	nokia,ea0326gmp|\
 	netis,eap930-v1|\
+	netis,n6-v2|\
 	netis,nx32u|\
 	openwrt,one|\
 	netcore,n60|\
 	qihoo,360t7|\
 	qihoo,360t7-ubi|\
 	routerich,ax3000-ubootmod|\
+	teralink,tl3020-256mb|\
 	tplink,tl-xdr4288|\
 	tplink,tl-xdr6086|\
 	tplink,tl-xdr6088|\
 	tplink,tl-xtr8488|\
+	wavlink,wl-wnt100x3-ubootmod|\
 	xiaomi,mi-router-ax3000t-ubootmod|\
 	xiaomi,redmi-router-ax6000-ubootmod|\
 	xiaomi,mi-router-wr30u-ubootmod|\
@@ -405,6 +414,7 @@ platform_copy_config() {
 	glinet,gl-mt6000|\
 	glinet,gl-x3000|\
 	glinet,gl-xe3000|\
+	globitel,bt-r320|\
 	hiveton,h5000m|\
 	huasifei,wh3000|\
 	huasifei,wh3000-pro-emmc|\

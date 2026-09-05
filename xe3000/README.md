@@ -1,6 +1,6 @@
-# GL.iNet GL-XE3000 (Pulli AX) — vanilla OpenWrt build
+# GL.iNet GL-XE3000 (Puli AX) — vanilla OpenWrt build
 
-A working OpenWrt 25.12 image for the GL.iNet GL-XE3000 (Pulli AX),
+A working OpenWrt 25.12 image for the GL.iNet GL-XE3000 (Puli AX),
 including the kernel and userspace pieces needed to drive the
 Quectel RM520N-GL 5G modem on the mainline `mhi_pci_generic` +
 `mhi_wwan_mbim` path with no proprietary out-of-tree bits, with
@@ -115,7 +115,7 @@ And adds:
 
 | Field | Value |
 |---|---|
-| Device | GL.iNet GL-XE3000 (Pulli AX) |
+| Device | GL.iNet GL-XE3000 (Puli AX) |
 | SoC | MediaTek MT7981A |
 | Wi-Fi | MT7976 (2.4 GHz + 5 GHz) |
 | Modem | Quectel RM520N-GL (5G NR Sub-6) over PCIe MHI |
